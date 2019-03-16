@@ -1,12 +1,12 @@
 package com.paulinasadowska.rxworkmanagerobservers
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.workDataOf
+import com.paulinasadowska.rxworkmanagerobservers.utils.DEFAULT_DELAY
+import com.paulinasadowska.rxworkmanagerobservers.utils.createEchoRequest
 import com.paulinasadowska.rxworkmanagerobservers.utils.initializeTestWorkManager
-import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker
 import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker.Companion.KEY_ECHO_MESSAGE
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.hamcrest.MatcherAssert.assertThat
@@ -26,7 +26,6 @@ class WorkInfoListObservableTest {
         private const val EXAMPLE_ECHO_MESSAGE_1 = "some message 1"
         private const val EXAMPLE_ECHO_MESSAGE_2 = "some message 2"
         private const val REQUEST_TAG = "requestTag"
-        private const val DELAY = 20L
     }
 
     private val workManager by lazy { WorkManager.getInstance() }
@@ -39,8 +38,8 @@ class WorkInfoListObservableTest {
     @Test
     fun someInputData_echoWorker_completesWithTwoValues() {
         //given
-        val request1 = createEchoRequest(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)
-        val request2 = createEchoRequest(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
+        val request1 = createEchoRequestWithTag(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)
+        val request2 = createEchoRequestWithTag(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
 
         //when
         workManager.enqueue(request1)
@@ -51,7 +50,7 @@ class WorkInfoListObservableTest {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
-        sleep(DELAY)
+        sleep(DEFAULT_DELAY)
 
         //then
         workListObserver.values().apply {
@@ -68,8 +67,8 @@ class WorkInfoListObservableTest {
     @Test
     fun onlyOneRequestWithInputData_echoWorker_completesWithOneValue() {
         //given
-        val request1 = createEchoRequest()
-        val request2 = createEchoRequest(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
+        val request1 = createEchoRequestWithTag()
+        val request2 = createEchoRequestWithTag(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
 
         //when
         workManager.enqueue(request1)
@@ -80,7 +79,7 @@ class WorkInfoListObservableTest {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
-        sleep(DELAY)
+        sleep(DEFAULT_DELAY)
 
         //then
         workListObserver.values().apply {
@@ -95,8 +94,8 @@ class WorkInfoListObservableTest {
     @Test
     fun allRequestsFailde_echoWorker_completesWithNoValues() {
         //given
-        val request1 = createEchoRequest()
-        val request2 = createEchoRequest()
+        val request1 = createEchoRequestWithTag()
+        val request2 = createEchoRequestWithTag()
 
         //when
         workManager.enqueue(request1)
@@ -107,20 +106,14 @@ class WorkInfoListObservableTest {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
-        sleep(DELAY)
+        sleep(DEFAULT_DELAY)
 
         //then
         assertThat(workListObserver.values(), emptyIterable())
         workListObserver.assertComplete()
     }
 
-    private fun createEchoRequest(pair: Pair<String, String>? = null): WorkRequest {
-        val builder = OneTimeWorkRequestBuilder<EchoWorker>()
-        pair?.let {
-            builder.setInputData(workDataOf(it))
-        }
-        return builder
-                .addTag(REQUEST_TAG)
-                .build()
+    private fun createEchoRequestWithTag(pair: Pair<String, String>? = null): WorkRequest {
+        return createEchoRequest(pair, REQUEST_TAG)
     }
 }
