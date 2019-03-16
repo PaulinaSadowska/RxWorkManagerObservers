@@ -15,7 +15,7 @@ import java.lang.Thread.sleep
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
-class WorkerLiveDataSingleTest {
+class WorkDataSingleTest {
 
     companion object {
         private const val EXAMPLE_ECHO_MESSAGE = "some message"
@@ -38,7 +38,7 @@ class WorkerLiveDataSingleTest {
         workManager.enqueue(request)
         val workSingle = workManager
                 .getWorkInfoByIdLiveData(request.id)
-                .toSingle()
+                .toWorkDataSingle()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -57,7 +57,7 @@ class WorkerLiveDataSingleTest {
         workManager.enqueue(request)
         val workSingle = workManager
                 .getWorkInfoByIdLiveData(request.id)
-                .toSingle()
+                .toWorkDataSingle()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -80,7 +80,7 @@ class WorkerLiveDataSingleTest {
         //when
         workManager.enqueue(request)
         val workSingle = workManager.getWorkInfoByIdLiveData(request.id)
-                .toSingle()
+                .toWorkDataSingle()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 

@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
-class WorkerLiveDataTagSingleTest {
+class WorkInfoListObservableTest {
 
     companion object {
         private const val EXAMPLE_ECHO_MESSAGE_1 = "some message 1"
@@ -42,7 +42,7 @@ class WorkerLiveDataTagSingleTest {
         workManager.enqueue(request2)
         val workSingle = workManager
                 .getWorkInfosByTagLiveData(REQUEST_TAG)
-                .toObservable()
+                .toWorkInfoListObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
