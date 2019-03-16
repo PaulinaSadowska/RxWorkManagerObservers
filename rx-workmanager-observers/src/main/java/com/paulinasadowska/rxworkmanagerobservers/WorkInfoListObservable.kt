@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.work.Data
 import androidx.work.WorkInfo
 import com.paulinasadowska.rxworkmanagerobservers.exceptions.LiveDataSubscribedOnWrongThreadException
+import com.paulinasadowska.rxworkmanagerobservers.observers.WorkInfoListObserver
 import com.paulinasadowska.rxworkmanagerobservers.utils.isOnMainThread
 import io.reactivex.Observable
 import io.reactivex.Observer
