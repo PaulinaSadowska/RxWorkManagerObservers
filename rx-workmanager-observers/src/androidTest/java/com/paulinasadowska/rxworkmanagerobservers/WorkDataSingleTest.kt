@@ -7,6 +7,7 @@ import com.paulinasadowska.rxworkmanagerobservers.exceptions.WorkFailedException
 import com.paulinasadowska.rxworkmanagerobservers.utils.initializeTestWorkManager
 import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker
 import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker.Companion.KEY_ECHO_MESSAGE
+import com.paulinasadowska.rxworkmanagerobservers.workers.EmptyWorker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.junit.Before
 import org.junit.Test
@@ -93,6 +94,25 @@ class WorkDataSingleTest {
 
         //then
         workSingle.assertValue(workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE))
+    }
+
+    @Test
+    fun emptyWorker_successWithEmptyValue() {
+        //given
+        val request = OneTimeWorkRequest.from(EmptyWorker::class.java)
+
+        //when
+        workManager.enqueue(request)
+        val workSingle = workManager
+                .getWorkInfoByIdLiveData(request.id)
+                .toWorkDataSingle()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .test()
+
+        sleep(DELAY)
+
+        //then
+        workSingle.assertValue(workDataOf())
     }
 
     private fun createEchoRequest(): WorkRequest {

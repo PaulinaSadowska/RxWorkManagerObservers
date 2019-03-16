@@ -5,8 +5,10 @@ import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 
-internal class EchoWorker(context: Context, workerParameters: WorkerParameters)
-    : Worker(context, workerParameters) {
+internal class EchoWorker(
+        context: Context,
+        workerParameters: WorkerParameters
+) : Worker(context, workerParameters) {
 
     internal companion object {
         internal const val KEY_ECHO_MESSAGE = "echoMessage"
