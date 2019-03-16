@@ -42,7 +42,6 @@ dependencies {
 
     // WorkManager
     implementation "android.arch.work:work-runtime-ktx:$versions.workManager"
-    implementation "android.arch.work:work-rxjava2:$versions.workManager"
     androidTestImplementation "android.arch.work:work-testing:$versions.workManager"
 
     // Rx
