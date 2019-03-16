@@ -51,11 +51,18 @@ class WorkerLiveDataObservable(
 
             observer.apply {
                 when (workInfo.state) {
-                    WorkInfo.State.FAILED -> onError(WorkFailedException(workInfo.id))
-                    WorkInfo.State.CANCELLED -> onError(WorkCancelledException(workInfo.id))
+                    WorkInfo.State.FAILED -> {
+                        onError(WorkFailedException(workInfo.id))
+                        removeObserver()
+                    }
+                    WorkInfo.State.CANCELLED -> {
+                        onError(WorkCancelledException(workInfo.id))
+                        removeObserver()
+                    }
                     WorkInfo.State.SUCCEEDED -> {
                         onNext(workInfo)
                         onComplete()
+                        removeObserver()
                     }
                     else -> onNext(workInfo)
                 }
@@ -64,6 +71,10 @@ class WorkerLiveDataObservable(
         }
 
         override fun onDispose() {
+            removeObserver()
+        }
+
+        private fun removeObserver() {
             liveData.removeObserver(this)
         }
     }

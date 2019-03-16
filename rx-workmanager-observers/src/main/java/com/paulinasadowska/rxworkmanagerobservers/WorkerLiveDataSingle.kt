@@ -53,18 +53,30 @@ class WorkerLiveDataSingle(
 
             observer.apply {
                 when (workInfo.state) {
-                    WorkInfo.State.SUCCEEDED -> onSuccess(workInfo.outputData)
-                    WorkInfo.State.FAILED -> onError(WorkFailedException(workInfo.id))
-                    WorkInfo.State.CANCELLED -> onError(WorkCancelledException(workInfo.id))
+                    WorkInfo.State.SUCCEEDED -> {
+                        onSuccess(workInfo.outputData)
+                        removeObserver()
+                    }
+                    WorkInfo.State.FAILED -> {
+                        onError(WorkFailedException(workInfo.id))
+                        removeObserver()
+                    }
+                    WorkInfo.State.CANCELLED -> {
+                        onError(WorkCancelledException(workInfo.id))
+                        removeObserver()
+                    }
                     else -> {
                         // wait
                     }
                 }
             }
-
         }
 
         override fun onDispose() {
+            removeObserver()
+        }
+
+        private fun removeObserver() {
             liveData.removeObserver(this)
         }
     }
