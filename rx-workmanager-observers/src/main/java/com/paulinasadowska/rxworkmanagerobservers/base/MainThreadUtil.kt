@@ -1,4 +1,4 @@
-package com.paulinasadowska.rxworkmanagerobservers.utils
+package com.paulinasadowska.rxworkmanagerobservers.base
 
 import android.os.Looper
 

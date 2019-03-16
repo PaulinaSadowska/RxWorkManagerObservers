@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
 import com.paulinasadowska.rxworkmanagerobservers.exceptions.WorkCancelledException
 import com.paulinasadowska.rxworkmanagerobservers.exceptions.WorkFailedException
+import com.paulinasadowska.rxworkmanagerobservers.observers.base.WorkInfoLiveDataObserver
 import io.reactivex.Observer
 
 internal class WorkInfoObserver(

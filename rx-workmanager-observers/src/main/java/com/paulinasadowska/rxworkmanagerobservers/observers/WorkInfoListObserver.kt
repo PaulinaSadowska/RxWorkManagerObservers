@@ -3,6 +3,7 @@ package com.paulinasadowska.rxworkmanagerobservers.observers
 import androidx.lifecycle.LiveData
 import androidx.work.Data
 import androidx.work.WorkInfo
+import com.paulinasadowska.rxworkmanagerobservers.observers.base.WorkInfoLiveDataListObserver
 import io.reactivex.Observer
 import java.util.*
 

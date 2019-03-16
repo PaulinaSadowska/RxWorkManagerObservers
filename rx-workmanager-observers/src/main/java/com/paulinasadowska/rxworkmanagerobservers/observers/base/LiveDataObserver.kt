@@ -1,4 +1,4 @@
-package com.paulinasadowska.rxworkmanagerobservers.observers
+package com.paulinasadowska.rxworkmanagerobservers.observers.base
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

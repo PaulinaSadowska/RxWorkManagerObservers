@@ -9,6 +9,11 @@ import com.paulinasadowska.rxworkmanagerobservers.utils.initializeTestWorkManage
 import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker
 import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker.Companion.KEY_ECHO_MESSAGE
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.emptyIterable
+import org.hamcrest.Matchers.iterableWithSize
+import org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,15 +37,15 @@ class WorkInfoListObservableTest {
     }
 
     @Test
-    fun someInputData_echoWorker_successWithValueTheSameAsInput() {
+    fun someInputData_echoWorker_completesWithTwoValues() {
         //given
-        val request1 = createEchoRequestWithData(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)
-        val request2 = createEchoRequestWithData(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
+        val request1 = createEchoRequest(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)
+        val request2 = createEchoRequest(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
 
         //when
         workManager.enqueue(request1)
         workManager.enqueue(request2)
-        val workSingle = workManager
+        val workListObserver = workManager
                 .getWorkInfosByTagLiveData(REQUEST_TAG)
                 .toWorkInfoListObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -49,16 +54,72 @@ class WorkInfoListObservableTest {
         sleep(DELAY)
 
         //then
-        workSingle.values().apply {
-            assert(size == 2)
-            assert(contains(workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)))
-            assert(contains(workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)))
+        workListObserver.values().apply {
+            assertThat(this, iterableWithSize(2))
+            assertThat(this,
+                    containsInAnyOrder(
+                            workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1),
+                            workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
+                    ))
         }
+        workListObserver.assertComplete()
     }
 
-    private fun createEchoRequestWithData(pair: Pair<String, String>): WorkRequest {
-        return OneTimeWorkRequestBuilder<EchoWorker>()
-                .setInputData(workDataOf(pair))
+    @Test
+    fun onlyOneRequestWithInputData_echoWorker_completesWithOneValue() {
+        //given
+        val request1 = createEchoRequest()
+        val request2 = createEchoRequest(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
+
+        //when
+        workManager.enqueue(request1)
+        workManager.enqueue(request2)
+        val workListObserver = workManager
+                .getWorkInfosByTagLiveData(REQUEST_TAG)
+                .toWorkInfoListObservable()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .test()
+
+        sleep(DELAY)
+
+        //then
+        workListObserver.values().apply {
+            assertThat(this, iterableWithSize(1))
+            assertThat(this, Matchers.contains(
+                    workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_2)
+            ))
+        }
+        workListObserver.assertComplete()
+    }
+
+    @Test
+    fun allRequestsFailde_echoWorker_completesWithNoValues() {
+        //given
+        val request1 = createEchoRequest()
+        val request2 = createEchoRequest()
+
+        //when
+        workManager.enqueue(request1)
+        workManager.enqueue(request2)
+        val workListObserver = workManager
+                .getWorkInfosByTagLiveData(REQUEST_TAG)
+                .toWorkInfoListObservable()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .test()
+
+        sleep(DELAY)
+
+        //then
+        assertThat(workListObserver.values(), emptyIterable())
+        workListObserver.assertComplete()
+    }
+
+    private fun createEchoRequest(pair: Pair<String, String>? = null): WorkRequest {
+        val builder = OneTimeWorkRequestBuilder<EchoWorker>()
+        pair?.let {
+            builder.setInputData(workDataOf(it))
+        }
+        return builder
                 .addTag(REQUEST_TAG)
                 .build()
     }
