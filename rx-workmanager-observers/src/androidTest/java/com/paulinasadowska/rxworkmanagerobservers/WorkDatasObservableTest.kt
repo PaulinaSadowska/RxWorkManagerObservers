@@ -4,6 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.workDataOf
+import com.paulinasadowska.rxworkmanagerobservers.extensions.getWorkDatasByTagObservable
+import com.paulinasadowska.rxworkmanagerobservers.extensions.toWorkDatasObservable
 import com.paulinasadowska.rxworkmanagerobservers.utils.DEFAULT_DELAY
 import com.paulinasadowska.rxworkmanagerobservers.utils.createEchoRequest
 import com.paulinasadowska.rxworkmanagerobservers.utils.initializeTestWorkManager
@@ -20,7 +22,7 @@ import org.junit.runner.RunWith
 import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
-class WorkInfoListObservableTest {
+class WorkDatasObservableTest {
 
     companion object {
         private const val EXAMPLE_ECHO_MESSAGE_1 = "some message 1"
@@ -45,8 +47,7 @@ class WorkInfoListObservableTest {
         workManager.enqueue(request1)
         workManager.enqueue(request2)
         val workListObserver = workManager
-                .getWorkInfosByTagLiveData(REQUEST_TAG)
-                .toWorkInfoListObservable()
+                .getWorkDatasByTagObservable(REQUEST_TAG)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -74,8 +75,7 @@ class WorkInfoListObservableTest {
         workManager.enqueue(request1)
         workManager.enqueue(request2)
         val workListObserver = workManager
-                .getWorkInfosByTagLiveData(REQUEST_TAG)
-                .toWorkInfoListObservable()
+                .getWorkDatasByTagObservable(REQUEST_TAG)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -101,8 +101,7 @@ class WorkInfoListObservableTest {
         workManager.enqueue(request1)
         workManager.enqueue(request2)
         val workListObserver = workManager
-                .getWorkInfosByTagLiveData(REQUEST_TAG)
-                .toWorkInfoListObservable()
+                .getWorkDatasByTagObservable(REQUEST_TAG)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 

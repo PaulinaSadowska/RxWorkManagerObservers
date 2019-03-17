@@ -3,8 +3,8 @@ package com.paulinasadowska.rxworkmanagerobservers.observers.base
 import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
 
-internal abstract class WorkInfoLiveDataListObserver(
-        private val liveData: LiveData<List<WorkInfo>>
+internal abstract class WorkInfosLiveDataObserver(
+        liveData: LiveData<List<WorkInfo>>
 ) : LiveDataObserver<List<WorkInfo>>(liveData) {
 
     override fun onChangedAndNotDisposed(value: List<WorkInfo>) {

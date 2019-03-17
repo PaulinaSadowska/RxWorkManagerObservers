@@ -7,6 +7,8 @@ import androidx.work.WorkManager
 import androidx.work.testing.WorkManagerTestInitHelper
 import androidx.work.workDataOf
 import com.paulinasadowska.rxworkmanagerobservers.exceptions.WorkFailedException
+import com.paulinasadowska.rxworkmanagerobservers.extensions.getWorkDataByIdSingle
+import com.paulinasadowska.rxworkmanagerobservers.extensions.toWorkDataSingle
 import com.paulinasadowska.rxworkmanagerobservers.utils.DEFAULT_DELAY
 import com.paulinasadowska.rxworkmanagerobservers.utils.createEchoRequest
 import com.paulinasadowska.rxworkmanagerobservers.utils.initializeTestWorkManager
@@ -42,8 +44,7 @@ class WorkDataSingleTest {
         //when
         workManager.enqueue(request)
         val workSingle = workManager
-                .getWorkInfoByIdLiveData(request.id)
-                .toWorkDataSingle()
+                .getWorkDataByIdSingle(request.id)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -61,8 +62,7 @@ class WorkDataSingleTest {
         //when
         workManager.enqueue(request)
         val workSingle = workManager
-                .getWorkInfoByIdLiveData(request.id)
-                .toWorkDataSingle()
+                .getWorkDataByIdSingle(request.id)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -84,8 +84,8 @@ class WorkDataSingleTest {
 
         //when
         workManager.enqueue(request)
-        val workSingle = workManager.getWorkInfoByIdLiveData(request.id)
-                .toWorkDataSingle()
+        val workSingle = workManager
+                .getWorkDataByIdSingle(request.id)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
@@ -108,8 +108,7 @@ class WorkDataSingleTest {
         //when
         workManager.enqueue(request)
         val workSingle = workManager
-                .getWorkInfoByIdLiveData(request.id)
-                .toWorkDataSingle()
+                .getWorkDataByIdSingle(request.id)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 

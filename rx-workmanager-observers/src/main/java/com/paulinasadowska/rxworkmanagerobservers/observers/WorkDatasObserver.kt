@@ -3,14 +3,14 @@ package com.paulinasadowska.rxworkmanagerobservers.observers
 import androidx.lifecycle.LiveData
 import androidx.work.Data
 import androidx.work.WorkInfo
-import com.paulinasadowska.rxworkmanagerobservers.observers.base.WorkInfoLiveDataListObserver
+import com.paulinasadowska.rxworkmanagerobservers.observers.base.WorkInfosLiveDataObserver
 import io.reactivex.Observer
 import java.util.*
 
-internal class WorkInfoListObserver(
+internal class WorkDatasObserver(
         private val observer: Observer<in Data>,
         liveData: LiveData<List<WorkInfo>>
-) : WorkInfoLiveDataListObserver(liveData) {
+) : WorkInfosLiveDataObserver(liveData) {
 
     private var succeededIds: MutableSet<UUID> = HashSet()
     private var errorIds: MutableSet<UUID> = HashSet()
