@@ -28,7 +28,7 @@ android {
 ext {
     ext.versions = [:]
     versions.androidX = "1.0.2"
-    versions.workManager = "1.0.0"
+    versions.workManager = "2.0.0"
 
     versions.rxJava = "2.2.7"
     versions.rxAndroid = "2.1.1"
@@ -41,8 +41,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.androidX"
 
     // WorkManager
-    implementation "android.arch.work:work-runtime-ktx:$versions.workManager"
-    androidTestImplementation "android.arch.work:work-testing:$versions.workManager"
+    implementation "androidx.work:work-runtime-ktx:$versions.workManager"
+    androidTestImplementation "androidx.work:work-testing:$versions.workManager"
 
     // Rx
     implementation "io.reactivex.rxjava2:rxjava:$versions.rxJava"
