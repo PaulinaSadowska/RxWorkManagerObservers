@@ -15,3 +15,7 @@ fun WorkManager.getWorkInfoByIdObservable(requestId: UUID) = this
 fun WorkManager.getWorkDatasByTagObservable(tag: String) = this
         .getWorkInfosByTagLiveData(tag)
         .toWorkDatasObservable()
+
+fun WorkManager.getWorkDatasForUniqueWorkObservable(name: String) = this
+        .getWorkInfosForUniqueWorkLiveData(name)
+        .toWorkDatasObservable()
