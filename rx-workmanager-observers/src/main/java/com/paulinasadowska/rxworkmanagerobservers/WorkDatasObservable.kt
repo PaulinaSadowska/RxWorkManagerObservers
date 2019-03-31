@@ -8,7 +8,8 @@ import com.paulinasadowska.rxworkmanagerobservers.observers.WorkDatasObserver
 import io.reactivex.Observer
 
 class WorkDatasObservable(
-        private val liveData: LiveData<List<WorkInfo>>
+        private val liveData: LiveData<List<WorkInfo>>,
+        private val ignoreError: Boolean
 ) : MainThreadObservable<Data>() {
 
     override fun onSubscribeOnMainThread(observer: Observer<in Data>) {
@@ -16,7 +17,7 @@ class WorkDatasObservable(
     }
 
     private fun Observer<in Data>.subscribeAndStartObserving() {
-        WorkDatasObserver(this, liveData).let {
+        WorkDatasObserver(this, liveData, ignoreError).let {
             onSubscribe(it)
             liveData.observeForever(it)
         }

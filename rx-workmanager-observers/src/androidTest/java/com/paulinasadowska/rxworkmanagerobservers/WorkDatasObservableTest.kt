@@ -4,9 +4,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.workDataOf
+import com.paulinasadowska.rxworkmanagerobservers.exceptions.WorkFailedException
 import com.paulinasadowska.rxworkmanagerobservers.extensions.getWorkDatasByTagObservable
-import com.paulinasadowska.rxworkmanagerobservers.extensions.toWorkDatasObservable
 import com.paulinasadowska.rxworkmanagerobservers.utils.DEFAULT_DELAY
+import com.paulinasadowska.rxworkmanagerobservers.utils.DEFAULT_DELAY_LONG
 import com.paulinasadowska.rxworkmanagerobservers.utils.createEchoRequest
 import com.paulinasadowska.rxworkmanagerobservers.utils.initializeTestWorkManager
 import com.paulinasadowska.rxworkmanagerobservers.workers.EchoWorker.Companion.KEY_ECHO_MESSAGE
@@ -92,7 +93,7 @@ class WorkDatasObservableTest {
     }
 
     @Test
-    fun allRequestsFailde_echoWorker_completesWithNoValues() {
+    fun allRequestsFail_echoWorker_completesWithNoValues() {
         //given
         val request1 = createEchoRequestWithTag()
         val request2 = createEchoRequestWithTag()
@@ -105,11 +106,38 @@ class WorkDatasObservableTest {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
-        sleep(DEFAULT_DELAY)
+        sleep(DEFAULT_DELAY_LONG)
 
         //then
         assertThat(workListObserver.values(), emptyIterable())
         workListObserver.assertComplete()
+    }
+
+    @Test
+    fun oneRequestFailAndIgnoreErrorFalse_echoWorker_error() {
+        //given
+        val request1 = createEchoRequestWithTag(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)
+        val request2 = createEchoRequestWithTag()
+
+        //when
+        workManager.enqueue(request1)
+        workManager.enqueue(request2)
+
+        val workListObserver = workManager
+                .getWorkDatasByTagObservable(REQUEST_TAG, false)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .test()
+
+        sleep(DEFAULT_DELAY)
+
+        //then
+        workListObserver.values().apply {
+            assertThat(this, iterableWithSize(1))
+            assertThat(this, Matchers.contains(
+                    workDataOf(KEY_ECHO_MESSAGE to EXAMPLE_ECHO_MESSAGE_1)
+            ))
+        }
+        workListObserver.assertError(WorkFailedException::class.java)
     }
 
     private fun createEchoRequestWithTag(pair: Pair<String, String>? = null): WorkRequest {

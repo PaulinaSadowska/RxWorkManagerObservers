@@ -14,8 +14,10 @@ fun LiveData<WorkInfo>.toWorkDataSingle(): Single<Data> {
     return WorkDataSingle(this)
 }
 
-fun LiveData<List<WorkInfo>>.toWorkDatasObservable(): Observable<Data> {
-    return WorkDatasObservable(this)
+fun LiveData<List<WorkInfo>>.toWorkDatasObservable(
+        ignoreError: Boolean = true
+): Observable<Data> {
+    return WorkDatasObservable(this, ignoreError)
 }
 
 fun LiveData<WorkInfo>.toWorkInfoObservable(): Observable<WorkInfo> {

@@ -1,4 +1,5 @@
 @file:JvmName("WorkManagerRxHelper")
+
 package com.paulinasadowska.rxworkmanagerobservers.extensions
 
 import androidx.work.WorkManager
@@ -12,10 +13,16 @@ fun WorkManager.getWorkInfoByIdObservable(requestId: UUID) = this
         .getWorkInfoByIdLiveData(requestId)
         .toWorkInfoObservable()
 
-fun WorkManager.getWorkDatasByTagObservable(tag: String) = this
+fun WorkManager.getWorkDatasByTagObservable(
+        tag: String,
+        ignoreError: Boolean = true
+) = this
         .getWorkInfosByTagLiveData(tag)
-        .toWorkDatasObservable()
+        .toWorkDatasObservable(ignoreError)
 
-fun WorkManager.getWorkDatasForUniqueWorkObservable(name: String) = this
+fun WorkManager.getWorkDatasForUniqueWorkObservable(
+        name: String,
+        ignoreError: Boolean = true
+) = this
         .getWorkInfosForUniqueWorkLiveData(name)
-        .toWorkDatasObservable()
+        .toWorkDatasObservable(ignoreError)

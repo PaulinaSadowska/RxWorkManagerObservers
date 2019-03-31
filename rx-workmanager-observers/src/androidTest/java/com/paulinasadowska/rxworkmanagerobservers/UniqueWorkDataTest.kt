@@ -105,7 +105,7 @@ class UniqueWorkDataTest {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .test()
 
-        sleep(DEFAULT_DELAY_LONG*100)
+        sleep(DEFAULT_DELAY_LONG)
 
         //then
         workListObserver.assertComplete()
