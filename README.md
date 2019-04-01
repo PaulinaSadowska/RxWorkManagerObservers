@@ -24,14 +24,58 @@ The library does not depend on work-rxjava2. It works with any type of worker th
 ## WorkManager extensions
 
 ### Observing the Data by id:
+```kotlin
+WorkManager.getInstance().getWorkDataByIdSingle(request.id)
+			 .subscribe(...)
+```
 
-#### Observing the WorkInfo by id:
+### Observing the WorkInfo by id:
+```kotlin
+WorkManager.getInstance().getWorkInfoByIdObservable(request.id)
+			 .subscribe(...)
+```
 
 ### Observing the Data by tag
+```kotlin
+WorkManager.getInstance().getWorkDatasByTagObservable(tag = WORK_TAG, ignoreError = false)
+			 .subscribe(...)
+```
 
 ### Unique work
+```kotlin
+WorkManager.getInstance().getWorkDatasForUniqueWorkObservable(WORK_NAME)
+			 .subscribe(...)
+```
 
-## LiveData extensions
+## LiveData to Observable conversion methods
+
+### Observing the Data by id:
+```kotlin
+WorkManager.getInstance().getWorkInfoByIdLiveData(request.id)
+        		 .toWorkDataSingle()
+			 .subscribe(...)
+```
+
+### Observing the WorkInfo by id:
+```kotlin
+WorkManager.getInstance().getWorkInfoByIdLiveData(request.id)
+        		 .toWorkInfoObservable()
+			 .subscribe(...)
+```
+
+### Observing the Data by tag
+```kotlin
+WorkManager.getInstance().getWorkInfosByTagLiveData(WORK_TAG)
+        		 .toWorkDatasObservable()
+			 .subscribe(...)
+```
+
+### Unique work
+```kotlin
+WorkManager.getInstance().getWorkInfosForUniqueWorkLiveData(WORK_NAME)
+        		 .toWorkDatasObservable()
+			 .subscribe(...)
+```
 
 ## Threading
 The Observable returned from each function from this library **have to be subscribed on the main thread** (because there is ``LiveData.observeForever`` called under the hood). The actual work, will still be executed on the background thread specified by the WorkManager.
