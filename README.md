@@ -83,6 +83,9 @@ The Observable returned from each function from this library **have to be subscr
 ## More info
 More about this library and the WorkManager you can read in my article: 
 
+[How to use WorkManager with RxJava](https://proandroiddev.com/how-to-use-workmanager-with-rxjava-b5936f68e024)
+
+
 ## License
 ```
 Copyright 2019 Paulina Sadowska
